@@ -7,143 +7,98 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,sans-serif}
 body{background:#0a0f1e;color:white;min-height:100vh;padding-bottom:110px}
 .header{display:flex;align-items:center;justify-content:space-between;padding:20px 16px 8px}
-.header h1{font-size:20px;font-weight:800}
-.top-status{text-align:center;color:#8b9bb4;font-size:12px;margin-bottom:14px}
-.dot{width:7px;height:7px;background:#4ade80;border-radius:50%;display:inline-block;margin-left:5px}
 .card{background:#1a2340;border:1px solid #2a3655;border-radius:20px;margin:0 14px 14px;padding:16px}
-.label{color:#8b9bb4;font-size:10px;letter-spacing:1px}
-.big{font-size:40px;font-weight:900;margin:6px 0}
+.big{font-size:40px;font-weight:900}
 .pill{border:1px solid #4ade80;color:#4ade80;padding:5px 10px;border-radius:20px;font-size:13px;float:right;margin-top:-42px}
 .row{display:flex;justify-content:space-between;border-top:1px solid #2a3655;margin-top:14px;padding-top:14px}
-.small{font-size:11px;color:#8b9bb4}
-.val{font-size:17px;font-weight:800;margin-top:3px}
-.green{color:#4ade80}.red{color:#f87171}
-.warn{background:linear-gradient(135deg,#8a6d1b,#5a4a12);border:1px solid #fbbf24;border-radius:16px;margin:0 14px 18px;padding:14px;display:flex;gap:10px}
-.trade-label{text-align:center;color:#8b9bb4;font-size:11px;letter-spacing:1px;margin:6px 0}
 .btns{display:flex;gap:10px;margin:0 14px}
 .btn{flex:1;padding:18px;border-radius:18px;border:none;font-weight:900;font-size:17px;color:white}
-.btn-win{background:#22c55e} .btn-loss{background:#ef4444}
-.bottom{position:fixed;bottom:10px;left:10px;right:10px;background:#151e35;border:1px solid #2a3655;border-radius:22px;display:flex;justify-content:space-around;padding:10px 0}
-.item{text-align:center;color:#6b7a99;font-size:10px} .item.active{color:#5b8def}
+.btn-win{background:#22c55e}.btn-loss{background:#ef4444}
+.bottom{position:fixed;bottom:10px;left:10px;right:10px;background:#151e35;border:1px solid #2a3655;border-radius:22px;display:flex;justify-content:space-around;padding:6px 0}
+.item{flex:1;text-align:center;color:#6b7a99;font-size:10px;padding:6px;border:none;background:none}
+.item.active{color:#5b8def}
+.page{display:none}.page.active{display:block}
+.hist-item{background:#0f1730;padding:10px;border-radius:10px;margin:6px 0;display:flex;justify-content:space-between}
 input{width:100%;padding:12px;border-radius:10px;border:none;margin:6px 0 10px;text-align:center;font-weight:800}
-#setupBtn{background:#e2e8f0;color:#0f172a;padding:12px 26px;border-radius:12px;border:none;font-weight:900;margin:8px auto;display:block}
+#setupBtn{background:#e2e8f0;color:#0f172a;padding:12px 26px;border-radius:12px;border:none;font-weight:900;margin:8px auto;display:block;width:100%}
+.warn{background:linear-gradient(135deg,#8a6d1b,#5a4a12);border:1px solid #fbbf24;border-radius:16px;margin:0 14px 18px;padding:14px;display:flex;gap:10px}
 </style>
 </head>
 <body>
-<div class="header"><span>‹</span><h1>FBS Equity Protector</h1><span>🛡️</span></div>
-<div class="top-status">Equity Protector • <span style="color:#4ade80">Active</span><span class="dot"></span></div>
+<div class="header"><span onclick="showPage('home')">‹</span><h1>FBS Equity Protector</h1><span>🛡️</span></div>
 
+<!-- HOME PAGE -->
+<div id="home" class="page active">
 <div id="setup" class="card" style="text-align:center">
-Start Balance Today<input id="start" type="number" step="0.01">
-Profit Lock $<input id="profit" type="number" value="8">
-Loss Lock $<input id="loss" type="number" value="9">
+Start Balance Today<input id="start" type="number">
+Profit Lock $<input id="profit" value="8" type="number">
+Loss Lock $<input id="loss" value="9" type="number">
 <button id="setupBtn" onclick="startDay()">START DAY</button>
-<button onclick="resetDay()" style="background:none;color:#8b9bb4;border:none;font-size:12px;margin-top:8px">RESET HISTORY</button>
 </div>
-
 <div class="card">
-<div class="label">ACCOUNT BALANCE</div>
+<div style="color:#8b9bb4;font-size:10px">ACCOUNT BALANCE</div>
 <div class="big">$<span id="bal">0.00</span></div>
 <div id="pnlPill" class="pill">+$0.00</div>
-<div class="row">
-<div><div class="small">🛡️ Protected</div><div class="val">$<span id="prot">0.00</span></div></div>
-<div style="width:1px;background:#2a3655"></div>
-<div><div class="small">📈 Today</div><div id="gain" class="val green">+$0.00</div></div>
+<div class="row"><div>🛡️ $<span id="prot">0.00</span></div><div id="gain" style="color:#4ade80;font-weight:800">+$0.00</div></div>
 </div>
-</div>
-
-<div id="lockBox" class="warn" style="display:none">
-<span style="font-size:26px">🔒</span>
-<div><b id="lockTitle">Lock Warning</b><p id="lockText" style="color:#fde68a;font-size:12px">Locked</p></div>
+<div id="lockBox" class="warn" style="display:none"><b id="lockTitle">Funga!</b><p id="lockText"></p></div>
+<div style="text-align:center;color:#8b9bb4;font-size:11px;margin:6px 0">TRADE ACTION</div>
+<div class="btns"><button class="btn btn-win" onclick="addTrade(4)">✔ WIN $4</button><button class="btn btn-loss" onclick="addTrade(-3)">↘ LOSS $3</button></div>
 </div>
 
-<div class="trade-label">TRADE ACTION</div>
-<div class="btns">
-<button class="btn btn-win" onclick="addTrade(4)">✔ WIN $4</button>
-<button class="btn btn-loss" onclick="addTrade(-3)">↘ LOSS $3</button>
+<!-- TRADE PAGE -->
+<div id="trade" class="page">
+<div class="card"><h3>📈 Live Trading</h3><p style="color:#8b9bb4;font-size:12px;margin-top:8px">Use your M15 PRO robot. When trade closes, come here and tap WIN or LOSS.</p><div class="btns" style="margin:14px 0"><button class="btn btn-win" onclick="addTrade(4)">WIN $4</button><button class="btn btn-loss" onclick="addTrade(-3)">LOSS $3</button></div><p style="font-size:12px">Balance: $<span id="bal2">0.00</span> | Today: $<span id="gain2">0.00</span></p></div>
+</div>
+
+<!-- HISTORY PAGE -->
+<div id="history" class="page">
+<div class="card"><h3>🕒 History</h3><div id="histList"></div><p id="noHist" style="color:#8b9bb4;font-size:12px;margin-top:10px">No trades today</p></div>
+</div>
+
+<!-- SETTINGS PAGE -->
+<div id="settings" class="page">
+<div class="card"><h3>⚙️ Settings</h3><p style="font-size:12px;color:#8b9bb4;margin:10px 0">FBS Account: 106742043</p>
+Profit Lock $<input id="profit2" value="8" type="number" oninput="document.getElementById('profit').value=this.value">
+Loss Lock $<input id="loss2" value="9" type="number" oninput="document.getElementById('loss').value=this.value">
+<button id="setupBtn" onclick="resetDay()">🔄 RESET DAY - New Day</button>
+<button id="setupBtn" style="background:#ef4444;color:white" onclick="clearAll()">❌ CLEAR ALL DATA</button>
+<p style="font-size:11px;color:#8b9bb4;margin-top:12px">Withdraw? Go to FBS app → Finance → Withdrawal. This site does NOT hold money.</p>
+</div>
 </div>
 
 <div class="bottom">
-<div class="item active">🏠<br>Home</div>
-<div class="item">📈<br>Trade</div>
-<div class="item">🕒<br>History</div>
-<div class="item">⚙️<br>Settings</div>
+<button class="item active" id="b-home" onclick="showPage('home')">🏠<br>Home</button>
+<button class="item" id="b-trade" onclick="showPage('trade')">📈<br>Trade</button>
+<button class="item" id="b-history" onclick="showPage('history')">🕒<br>History</button>
+<button class="item" id="b-settings" onclick="showPage('settings')">⚙️<br>Settings</button>
 </div>
 
 <script>
-let start = parseFloat(localStorage.getItem('fbs_start')||'50');
-let pnl = parseFloat(localStorage.getItem('fbs_pnl')||'0');
+let start=parseFloat(localStorage.getItem('fbs_start')||'50');
+let pnl=parseFloat(localStorage.getItem('fbs_pnl')||'0');
+let trades=JSON.parse(localStorage.getItem('fbs_trades')||'[]');
 document.getElementById('start').value=start;
 
-function startDay(){
-  start=parseFloat(document.getElementById('start').value)||50;
-  localStorage.setItem('fbs_start',start);
-  pnl=0;
-  save();
-  update();
-  document.getElementById('setup').style.display='none';
-  speak('Day started. Good luck.');
+function showPage(p){
+ document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
+ document.getElementById(p).classList.add('active');
+ document.querySelectorAll('.bottom .item').forEach(e=>e.classList.remove('active'));
+ document.getElementById('b-'+p).classList.add('active');
+ if(p=='history') renderHist();
+ if(p=='trade'){document.getElementById('bal2').innerText=(start+pnl).toFixed(2);document.getElementById('gain2').innerText=pnl.toFixed(2)}
 }
-
-function addTrade(v){
-  pnl+=v;
-  save(); update();
-  if(v>0) speak('Win. '+v+' dollars.');
-  else speak('Loss.');
-  checkLock();
-}
-
-function save(){
-  localStorage.setItem('fbs_start',start);
-  localStorage.setItem('fbs_pnl',pnl);
-}
-
-function update(){
-  let total=start+pnl;
-  document.getElementById('bal').innerText=total.toFixed(2);
-  document.getElementById('prot').innerText=start.toFixed(2);
-  document.getElementById('gain').innerText=(pnl>=0?'+':'')+'$'+pnl.toFixed(2);
-  document.getElementById('gain').className='val '+(pnl>=0?'green':'red');
-  document.getElementById('pnlPill').innerText=(pnl>=0?'+':'')+'$'+pnl.toFixed(2)+' PnL';
-}
-
-function checkLock(){
-  let profit=parseFloat(document.getElementById('profit').value)||8;
-  let loss=parseFloat(document.getElementById('loss').value)||9;
-  let box=document.getElementById('lockBox');
-  if(pnl>=profit){
-    box.style.display='flex';
-    document.getElementById('lockTitle').innerText='🔒 Funga Leo Umeshinda!';
-    document.getElementById('lockText').innerText='Profit +$'+pnl.toFixed(2)+'. Close FBS. Protect money!';
-    speak('Funga leo! Umeshinda dola '+pnl.toFixed(0)+'. Funga FBS sasa!');
-  } else if(pnl<=-loss){
-    box.style.display='flex';
-    document.getElementById('lockTitle').innerText='🔒 Stop Loss!';
-    document.getElementById('lockText').innerText='Loss $'+pnl.toFixed(2)+'. Close FBS now, save account.';
-    speak('Hasara imezidi. Funga FBS sasa uokoe account.');
-  } else {
-    box.style.display='none';
-  }
-}
-
-function resetDay(){
-  if(confirm('Reset day?')){
-    localStorage.clear(); pnl=0; start=50;
-    document.getElementById('start').value=50;
-    document.getElementById('setup').style.display='block';
-    update(); checkLock();
-  }
-}
-
-function speak(t){
-  try{
-    let u=new SpeechSynthesisUtterance(t);
-    u.lang='sw-KE'; speechSynthesis.speak(u);
-  }catch(e){}
-}
-
-update(); checkLock();
+function startDay(){start=parseFloat(document.getElementById('start').value)||50;localStorage.setItem('fbs_start',start);pnl=0;trades=[];save();update();document.getElementById('setup').style.display='none';showPage('home')}
+function addTrade(v){pnl+=v;trades.push({v:v,time:new Date().toLocaleTimeString(),bal:start+pnl});save();update();checkLock();if(navigator.vibrate) navigator.vibrate(100)}
+function save(){localStorage.setItem('fbs_start',start);localStorage.setItem('fbs_pnl',pnl);localStorage.setItem('fbs_trades',JSON.stringify(trades))}
+function update(){let total=start+pnl;document.getElementById('bal').innerText=total.toFixed(2);document.getElementById('prot').innerText=start.toFixed(2);document.getElementById('gain').innerText=(pnl>=0?'+':'')+'$'+pnl.toFixed(2);document.getElementById('pnlPill').innerText=(pnl>=0?'+':'')+'$'+pnl.toFixed(2)+' PnL';}
+function checkLock(){let profit=parseFloat(document.getElementById('profit').value)||8;let loss=parseFloat(document.getElementById('loss').value)||9;let box=document.getElementById('lockBox');if(pnl>=profit){box.style.display='flex';document.getElementById('lockTitle').innerText='🔒 Funga Leo Umeshinda!';document.getElementById('lockText').innerText='Profit +$'+pnl.toFixed(2)+'. Close FBS!';speak('Funga leo umeshinda');}else if(pnl<=-loss){box.style.display='flex';document.getElementById('lockTitle').innerText='🔒 Stop!';document.getElementById('lockText').innerText='Loss '+pnl.toFixed(2)+'. Close FBS!';speak('Funga hasara');}else{box.style.display='none'}}
+function renderHist(){let list=document.getElementById('histList');let no=document.getElementById('noHist');if(trades.length==0){list.innerHTML='';no.style.display='block';return}no.style.display='none';list.innerHTML=trades.slice().reverse().map(t=>`<div class="hist-item"><span>${t.time} ${t.v>0?'WIN':'LOSS'}</span><span style="color:${t.v>0?'#4ade80':'#f87171'}">${t.v>0?'+':''}$${t.v}</span><span>$${t.bal.toFixed(2)}</span></div>`).join('')}
+function resetDay(){if(confirm('Start new day with current balance?')){start=start+pnl;pnl=0;trades=[];document.getElementById('start').value=start;save();update();document.getElementById('setup').style.display='none';showPage('home');checkLock()}}
+function clearAll(){if(confirm('Delete everything?')){localStorage.clear();location.reload()}}
+function speak(t){try{speechSynthesis.speak(new SpeechSynthesisUtterance(t))}catch(e){}}
+update();checkLock();renderHist();
 if(localStorage.getItem('fbs_start')) document.getElementById('setup').style.display='none';
 </script>
 </body>
- </html>
+  </html>
