@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FBS Protector 106742043</title>
+<style>
+body{font-family:sans-serif;background:#0f172a;color:white;padding:20px;text-align:center}
+.card{background:#1e293b;padding:20px;border-radius:16px;margin:10px 0}
+input{width:80%;padding:12px;border-radius:8px;border:none;margin:10px}
+button{padding:14px 24px;border-radius:10px;border:none;font-weight:bold;margin:5px}
+.win{background:#22c55e;color:black}.loss{background:#ef4444;color:white}
+.lock{background:#f59e0b;color:black;padding:20px;border-radius:12px;font-size:18px}
+</style>
+</head>
+<body>
+<h2>🛡️ FBS Equity Protector</h2>
+<div class="card">
+Start Balance Today: <br><input id="start" type="number" value="50" step="0.01"><br>
+Daily Profit Lock: $<input id="profit" type="number" value="8"><br>
+Daily Loss Lock: $<input id="loss" type="number" value="9"><br>
+<button onclick="startDay()">START DAY</button>
+</div>
+<div class="card">
+<h3>Balance: $<span id="bal">0</span> | PnL: $<span id="pnl">0</span></h3>
+<button class="win" onclick="add(4)">+ WIN $4</button>
+<button class="loss" onclick="add(-3)">- LOSS $3</button><br>
+<button onclick="reset()">RESET DAY</button>
+</div>
+<div id="status" class="card">Enter balance and START DAY</div>
+<script>
+let start=0, pnl=0;
+function startDay(){
+ start=parseFloat(document.getElementById('start').value);
+ pnl=0; update();
+ document.getElementById('status').innerHTML="✅ Day started. Trade your M15 PRO now. Stop when locked.";
+}
+function add(v){ pnl+=v; update(); }
+function update(){
+ let bal=start+pnl;
+ document.getElementById('bal').innerText=bal.toFixed(2);
+ document.getElementById('pnl').innerText=pnl.toFixed(2);
+ let p=parseFloat(document.getElementById('profit').value);
+ let l=parseFloat(document.getElementById('loss').value);
+ let s=document.getElementById('status');
+ if(pnl>=p){ s.innerHTML=`<div class="lock">🔒 PROFIT LOCK HIT! +$${pnl.toFixed(2)}<br>CLOSE FBS. Done for today. Protect $$</div>`; }
+ else if(pnl<=-l){ s.innerHTML=`<div class="lock">🔒 LOSS LOCK HIT! $${pnl.toFixed(2)}<br>CLOSE FBS NOW. Save account for tomorrow.</div>`; }
+ else{ s.innerHTML=`Still OK - can trade. ${p-pnl>0?`$${(p-pnl).toFixed(2)} to profit lock`:`$${(Math.abs(pnl)+l).toFixed(2)} to loss lock`}`; }
+}
+function reset(){ pnl=0; update(); document.getElementById('status').innerHTML="Reset - start again"; }
+</script>
+</body>
+</html>
