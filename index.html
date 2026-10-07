@@ -1,51 +1,104 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FBS Protector 106742043</title>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>FBS Equity Protector</title>
 <style>
-body{font-family:sans-serif;background:#0f172a;color:white;padding:20px;text-align:center}
-.card{background:#1e293b;padding:20px;border-radius:16px;margin:10px 0}
-input{width:80%;padding:12px;border-radius:8px;border:none;margin:10px}
-button{padding:14px 24px;border-radius:10px;border:none;font-weight:bold;margin:5px}
-.win{background:#22c55e;color:black}.loss{background:#ef4444;color:white}
-.lock{background:#f59e0b;color:black;padding:20px;border-radius:12px;font-size:18px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,sans-serif}
+body{background:#0a0f1e;color:white;min-height:100vh;padding-bottom:100px}
+.header{display:flex;align-items:center;justify-content:space-between;padding:20px 16px 10px}
+.header h1{font-size:22px;font-weight:700}
+.top-status{text-align:center;color:#8b9bb4;font-size:13px;margin-bottom:16px}
+.top-status span{color:#4ade80}.dot{width:8px;height:8px;background:#4ade80;border-radius:50%;display:inline-block;margin-left:4px}
+.card{background:#1a2340;border:1px solid #2a3655;border-radius:20px;margin:0 16px 16px;padding:18px}
+.label{color:#8b9bb4;font-size:11px;letter-spacing:1px}
+.big{font-size:42px;font-weight:800;margin:8px 0}
+.pill{border:1px solid #4ade80;color:#4ade80;padding:6px 12px;border-radius:20px;font-size:14px;float:right;margin-top:-45px}
+.row{display:flex;justify-content:space-between;border-top:1px solid #2a3655;margin-top:16px;padding-top:16px}
+.small{font-size:12px;color:#8b9bb4}
+.val{font-size:18px;font-weight:700;margin-top:4px}
+.val.green{color:#4ade80}
+.warn{background:linear-gradient(135deg,#8a6d1b,#5a4a12);border:1px solid #fbbf24;border-radius:16px;margin:0 16px 20px;padding:14px;display:flex;gap:12px}
+.warn b{color:#fde68a;font-size:17px}
+.warn p{color:#fcd34d;font-size:12px;margin-top:2px}
+.trade-label{text-align:center;color:#8b9bb4;font-size:12px;letter-spacing:1px;margin:8px 0}
+.btns{display:flex;gap:12px;margin:0 16px}
+.btn{flex:1;padding:18px;border-radius:18px;border:none;font-weight:800;font-size:18px;color:white}
+.btn-win{background:#22c55e} .btn-loss{background:#ef4444}
+.bottom{position:fixed;bottom:12px;left:12px;right:12px;background:#151e35;border:1px solid #2a3655;border-radius:24px;display:flex;justify-content:space-around;padding:10px 0}
+.item{text-align:center;color:#6b7a99;font-size:11px} .item.active{color:#5b8def}
+.icon{font-size:22px;display:block;margin-bottom:2px}
+input{width:100%;padding:14px;border-radius:12px;border:none;margin:8px 0 12px;text-align:center;font-size:16px;font-weight:700}
+#setupBtn{background:#e2e8f0;color:#0f172a;padding:14px 28px;border-radius:14px;border:none;font-weight:800;margin:10px auto;display:block}
 </style>
 </head>
 <body>
-<h2>🛡️ FBS Equity Protector</h2>
-<div class="card">
-Start Balance Today: <br><input id="start" type="number" value="50" step="0.01"><br>
-Daily Profit Lock: $<input id="profit" type="number" value="8"><br>
-Daily Loss Lock: $<input id="loss" type="number" value="9"><br>
-<button onclick="startDay()">START DAY</button>
+
+<div class="header"><span style="font-size:24px">‹</span><h1>FBS Equity Protector</h1><span>🛡️</span></div>
+<div class="top-status">Equity Protector • <span>Active</span><span class="dot"></span></div>
+
+<div id="setup" class="card" style="text-align:center">
+Start Balance Today:<input id="start" value="50" type="number">
+Daily Profit Lock: $<input id="profit" value="8" type="number">
+Daily Loss Lock: $<input id="loss" value="9" type="number">
+<button id="setupBtn" onclick="startDay()">START DAY</button>
 </div>
+
 <div class="card">
-<h3>Balance: $<span id="bal">0</span> | PnL: $<span id="pnl">0</span></h3>
-<button class="win" onclick="add(4)">+ WIN $4</button>
-<button class="loss" onclick="add(-3)">- LOSS $3</button><br>
-<button onclick="reset()">RESET DAY</button>
+<div class="label">ACCOUNT BALANCE</div>
+<div class="big">$<span id="bal">50.00</span></div>
+<div id="pnlPill" class="pill">+$0.00 PnL</div>
+<div class="row">
+<div><div class="small">🛡️ Protected Equity</div><div class="val">$<span id="prot">50.00</span></div></div>
+<div style="width:1px;background:#2a3655"></div>
+<div><div class="small">📈 Today's Gain</div><div id="gain" class="val green">+$0.00</div></div>
 </div>
-<div id="status" class="card">Enter balance and START DAY</div>
+</div>
+
+<div id="lockBox" class="warn" style="display:none">
+<span style="font-size:26px">🔒</span>
+<div><b>Lock Warning</b><p id="lockText">Position is locked to protect equity.</p></div>
+</div>
+
+<div class="trade-label">TRADE ACTION</div>
+<div class="btns">
+<button class="btn btn-win" onclick="add(4)">✔ WIN $4</button>
+<button class="btn btn-loss" onclick="add(-3)">↘ LOSS $3</button>
+</div>
+
+<div class="bottom">
+<div class="item active"><span class="icon">🏠</span>Home</div>
+<div class="item"><span class="icon">📈</span>Trade</div>
+<div class="item"><span class="icon">🕒</span>History</div>
+<div class="item"><span class="icon">⚙️</span>Settings</div>
+</div>
+
 <script>
-let start=0, pnl=0;
+let start=50,pnl=0;
 function startDay(){
- start=parseFloat(document.getElementById('start').value);
+ start=parseFloat(document.getElementById('start').value)||50;
+ document.getElementById('prot').innerText=start.toFixed(2);
  pnl=0; update();
- document.getElementById('status').innerHTML="✅ Day started. Trade your M15 PRO now. Stop when locked.";
+ document.getElementById('setup').style.display='none';
 }
-function add(v){ pnl+=v; update(); }
+function add(v){pnl+=v;update()}
 function update(){
- let bal=start+pnl;
- document.getElementById('bal').innerText=bal.toFixed(2);
- document.getElementById('pnl').innerText=pnl.toFixed(2);
- let p=parseFloat(document.getElementById('profit').value);
- let l=parseFloat(document.getElementById('loss').value);
- let s=document.getElementById('status');
- if(pnl>=p){ s.innerHTML=`<div class="lock">🔒 PROFIT LOCK HIT! +$${pnl.toFixed(2)}<br>CLOSE FBS. Done for today. Protect $$</div>`; }
- else if(pnl<=-l){ s.innerHTML=`<div class="lock">🔒 LOSS LOCK HIT! $${pnl.toFixed(2)}<br>CLOSE FBS NOW. Save account for tomorrow.</div>`; }
- else{ s.innerHTML=`Still OK - can trade. ${p-pnl>0?`$${(p-pnl).toFixed(2)} to profit lock`:`$${(Math.abs(pnl)+l).toFixed(2)} to loss lock`}`; }
+ let total=start+pnl;
+ document.getElementById('bal').innerText=total.toFixed(2);
+ document.getElementById('gain').innerText=(pnl>=0?'+':'')+'$'+pnl.toFixed(2);
+ document.getElementById('pnlPill').innerText=(pnl>=0?'+':'')+'$'+pnl.toFixed(2)+' PnL';
+ let profit=parseFloat(document.getElementById('profit').value)||8;
+ let loss=parseFloat(document.getElementById('loss').value)||9;
+ let box=document.getElementById('lockBox');
+ if(pnl>=profit){
+   box.style.display='flex';
+   document.getElementById('lockText').innerText='Profit lock hit! +$'+pnl.toFixed(2)+'. CLOSE FBS. You are done today.';
+ }else if(pnl<=-loss){
+   box.style.display='flex';
+   document.getElementById('lockText').innerText='Loss lock hit! '+pnl.toFixed(2)+'. CLOSE FBS NOW to save account.';
+ }else{box.style.display='none'}
 }
-function reset(){ pnl=0; update(); document.getElementById('status').innerHTML="Reset - start again"; }
+startDay();
 </script>
 </body>
-</html>
+      </html>
